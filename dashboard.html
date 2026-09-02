@@ -1,0 +1,2691 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AgriGuardian AI Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f2;
+            color: #26332a;
+        }
+
+        header {
+            background: #2e7d32;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #2e7d32;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .welcome h2 {
+            margin-top: 0;
+            color: #2e7d32;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .feature-card h3 {
+            margin: 8px 0;
+            color: #2e7d32;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .button {
+            margin-top: 18px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #256628;
+        }
+
+        .result {
+            margin-top: 20px;
+            background: #f1f8f1;
+            padding: 18px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .recommended {
+            background: #e8f5e9;
+            font-weight: bold;
+        }
+
+        .recommendation-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #e8f5e9;
+            border-left: 6px solid #2e7d32;
+        }
+
+        .recommendation-box h3 {
+            margin-top: 0;
+            color: #2e7d32;
+        }
+
+        .assistant-response {
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================================
+     HEADER
+====================================================== -->
+
+<header>
+
+    <h1>🌱 AgriGuardian AI</h1>
+
+    <button class="logout-btn"
+            onclick="logout()">
+        Logout
+    </button>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- ======================================================
+     WELCOME
+====================================================== -->
+
+<div class="welcome">
+
+    <h2 id="welcomeMessage">
+        Welcome, Farmer!
+    </h2>
+
+    <p>
+        Your AI-powered farming assistant
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     FEATURES
+====================================================== -->
+
+<div class="feature-grid">
+
+    <div class="feature-card">
+
+        <div style="font-size:35px;">🌤️</div>
+
+        <h3>Weather</h3>
+
+        <p>
+            Check current weather conditions.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div style="font-size:35px;">🌾</div>
+
+        <h3>Crop Recommendation</h3>
+
+        <p>
+            Find suitable crops for your farm.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div style="font-size:35px;">🐛</div>
+
+        <h3>Pest & Disease</h3>
+
+        <p>
+            Get AI-assisted crop problem guidance.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div style="font-size:35px;">💧</div>
+
+        <h3>Irrigation</h3>
+
+        <p>
+            Get practical irrigation guidance.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div style="font-size:35px;">📈</div>
+
+        <h3>Market Prices</h3>
+
+        <p>
+            Compare prices across markets.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div style="font-size:35px;">💰</div>
+
+        <h3>Smart Market</h3>
+
+        <p>
+            Find the market with the best net return.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     WEATHER
+====================================================== -->
+
+<div class="section">
+
+    <h2>🌤️ Weather</h2>
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>
+                City
+            </label>
+
+            <input
+                type="text"
+                id="weatherCity"
+                placeholder="Example: Pune">
+
+        </div>
+
+    </div>
+
+    <button
+        class="button"
+        onclick="getWeather()">
+
+        Get Weather
+
+    </button>
+
+    <div
+        id="weatherResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     CROP RECOMMENDATION
+====================================================== -->
+
+<div class="section">
+
+    <h2>🌾 Crop Recommendation</h2>
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Location</label>
+
+            <input
+                id="cropLocation"
+                placeholder="Example: Pune">
+
+        </div>
+
+
+        <div>
+
+            <label>Soil Type</label>
+
+            <input
+                id="cropSoil"
+                placeholder="Example: Black soil">
+
+        </div>
+
+
+        <div>
+
+            <label>Season</label>
+
+            <select id="cropSeason">
+
+                <option value="Kharif">
+                    Kharif
+                </option>
+
+                <option value="Rabi">
+                    Rabi
+                </option>
+
+                <option value="Summer">
+                    Summer
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>Water Availability</label>
+
+            <select id="cropWater">
+
+                <option value="Low">
+                    Low
+                </option>
+
+                <option value="Medium">
+                    Medium
+                </option>
+
+                <option value="High">
+                    High
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="getCropRecommendation()">
+
+        Recommend Crops
+
+    </button>
+
+
+    <div
+        id="cropResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     PEST & DISEASE
+====================================================== -->
+
+<div class="section">
+
+    <h2>🐛 Pest & Disease Guidance</h2>
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Crop</label>
+
+            <input
+                id="pestCrop"
+                placeholder="Example: Tomato">
+
+        </div>
+
+
+        <div>
+
+            <label>Location</label>
+
+            <input
+                id="pestLocation"
+                placeholder="Example: Pune">
+
+        </div>
+
+    </div>
+
+
+    <div style="margin-top:15px;">
+
+        <label>
+            Symptoms
+        </label>
+
+        <textarea
+            id="pestSymptoms"
+            placeholder="Describe the symptoms..."></textarea>
+
+    </div>
+
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Language</label>
+
+            <select id="pestLanguage">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="hi">
+                    Hindi
+                </option>
+
+                <option value="mr">
+                    Marathi
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="getPestDisease()">
+
+        Analyze Problem
+
+    </button>
+
+
+    <div
+        id="pestResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     IRRIGATION
+====================================================== -->
+
+<div class="section">
+
+    <h2>💧 Irrigation Guidance</h2>
+
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Crop</label>
+
+            <input
+                id="irrigationCrop"
+                placeholder="Example: Tomato">
+
+        </div>
+
+
+        <div>
+
+            <label>Location</label>
+
+            <input
+                id="irrigationLocation"
+                placeholder="Example: Pune">
+
+        </div>
+
+
+        <div>
+
+            <label>Soil Type</label>
+
+            <input
+                id="irrigationSoil"
+                placeholder="Example: Black soil">
+
+        </div>
+
+
+        <div>
+
+            <label>Growth Stage</label>
+
+            <select id="growthStage">
+
+                <option value="Seedling">
+                    Seedling
+                </option>
+
+                <option value="Vegetative">
+                    Vegetative
+                </option>
+
+                <option value="Flowering">
+                    Flowering
+                </option>
+
+                <option value="Fruiting">
+                    Fruiting
+                </option>
+
+                <option value="Maturity">
+                    Maturity
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>Water Availability</label>
+
+            <select id="irrigationWater">
+
+                <option value="Low">
+                    Low
+                </option>
+
+                <option value="Medium">
+                    Medium
+                </option>
+
+                <option value="High">
+                    High
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>Language</label>
+
+            <select id="irrigationLanguage">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="hi">
+                    Hindi
+                </option>
+
+                <option value="mr">
+                    Marathi
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="getIrrigationGuidance()">
+
+        Get Irrigation Guidance
+
+    </button>
+
+
+    <div
+        id="irrigationResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     MARKET PRICE COMPARISON
+====================================================== -->
+
+<div class="section">
+
+    <h2>📈 Market Price Comparison</h2>
+
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Crop</label>
+
+            <input
+                id="marketCrop"
+                placeholder="Example: Tomato">
+
+        </div>
+
+
+        <div>
+
+            <label>Location</label>
+
+            <input
+                id="marketLocation"
+                placeholder="Example: Pune">
+
+        </div>
+
+
+        <div>
+
+            <label>Quantity</label>
+
+            <input
+                type="number"
+                id="marketQuantity"
+                value="100">
+
+        </div>
+
+
+        <div>
+
+            <label>Language</label>
+
+            <select id="marketLanguage">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="hi">
+                    Hindi
+                </option>
+
+                <option value="mr">
+                    Marathi
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <h3>Market 1</h3>
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Market Name</label>
+
+            <input
+                id="market1"
+                placeholder="Pune Market">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="price1"
+                placeholder="2500">
+
+        </div>
+
+    </div>
+
+
+    <h3>Market 2</h3>
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Market Name</label>
+
+            <input
+                id="market2"
+                placeholder="Mumbai Market">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="price2"
+                placeholder="2800">
+
+        </div>
+
+    </div>
+
+
+    <h3>Market 3</h3>
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Market Name</label>
+
+            <input
+                id="market3"
+                placeholder="Nashik Market">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="price3"
+                placeholder="2300">
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="compareMarkets()">
+
+        Compare Markets
+
+    </button>
+
+
+    <div
+        id="marketResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     NET RETURN CALCULATOR
+====================================================== -->
+
+<div class="section">
+
+    <h2>💰 Net Return Calculator</h2>
+
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Crop</label>
+
+            <input
+                id="netCrop"
+                placeholder="Example: Tomato">
+
+        </div>
+
+
+        <div>
+
+            <label>Quantity</label>
+
+            <input
+                type="number"
+                id="netQuantity"
+                value="100">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="netPrice"
+                placeholder="2500">
+
+        </div>
+
+
+        <div>
+
+            <label>Transport Cost</label>
+
+            <input
+                type="number"
+                id="transportCost"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Commission</label>
+
+            <input
+                type="number"
+                id="commission"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Loading Cost</label>
+
+            <input
+                type="number"
+                id="loadingCost"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Other Costs</label>
+
+            <input
+                type="number"
+                id="otherCosts"
+                value="0">
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="calculateNetReturn()">
+
+        Calculate Net Return
+
+    </button>
+
+
+    <div
+        id="netResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     SMART MARKET RECOMMENDATION
+====================================================== -->
+
+<div class="section">
+
+    <h2>🏆 Smart Market Recommendation</h2>
+
+    <p>
+        Find the market that gives you the
+        <strong>highest expected net return</strong>,
+        not simply the highest selling price.
+    </p>
+
+
+    <!-- BASIC INFORMATION -->
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Crop</label>
+
+            <input
+                id="smartCrop"
+                placeholder="Example: Tomato">
+
+        </div>
+
+
+        <div>
+
+            <label>Quantity</label>
+
+            <input
+                type="number"
+                id="smartQuantity"
+                value="100">
+
+        </div>
+
+    </div>
+
+
+    <!-- MARKET 1 -->
+
+    <h3>🥇 Market 1</h3>
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Market Name</label>
+
+            <input
+                id="smartMarket1"
+                placeholder="Pune Market">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="smartPrice1"
+                placeholder="2500">
+
+        </div>
+
+
+        <div>
+
+            <label>Transport Cost</label>
+
+            <input
+                type="number"
+                id="smartTransport1"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Commission</label>
+
+            <input
+                type="number"
+                id="smartCommission1"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Loading Cost</label>
+
+            <input
+                type="number"
+                id="smartLoading1"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Other Costs</label>
+
+            <input
+                type="number"
+                id="smartOther1"
+                value="0">
+
+        </div>
+
+    </div>
+
+
+    <!-- MARKET 2 -->
+
+    <h3>🥈 Market 2</h3>
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Market Name</label>
+
+            <input
+                id="smartMarket2"
+                placeholder="Mumbai Market">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="smartPrice2"
+                placeholder="2800">
+
+        </div>
+
+
+        <div>
+
+            <label>Transport Cost</label>
+
+            <input
+                type="number"
+                id="smartTransport2"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Commission</label>
+
+            <input
+                type="number"
+                id="smartCommission2"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Loading Cost</label>
+
+            <input
+                type="number"
+                id="smartLoading2"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Other Costs</label>
+
+            <input
+                type="number"
+                id="smartOther2"
+                value="0">
+
+        </div>
+
+    </div>
+
+
+    <!-- MARKET 3 -->
+
+    <h3>🥉 Market 3</h3>
+
+    <div class="form-grid">
+
+
+        <div>
+
+            <label>Market Name</label>
+
+            <input
+                id="smartMarket3"
+                placeholder="Nashik Market">
+
+        </div>
+
+
+        <div>
+
+            <label>Price per Unit</label>
+
+            <input
+                type="number"
+                id="smartPrice3"
+                placeholder="2300">
+
+        </div>
+
+
+        <div>
+
+            <label>Transport Cost</label>
+
+            <input
+                type="number"
+                id="smartTransport3"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Commission</label>
+
+            <input
+                type="number"
+                id="smartCommission3"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Loading Cost</label>
+
+            <input
+                type="number"
+                id="smartLoading3"
+                value="0">
+
+        </div>
+
+
+        <div>
+
+            <label>Other Costs</label>
+
+            <input
+                type="number"
+                id="smartOther3"
+                value="0">
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="getSmartMarketRecommendation()">
+
+        🏆 Find Best Market
+
+    </button>
+
+
+    <div
+        id="smartMarketResult"
+        class="result"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     AI ASSISTANT
+====================================================== -->
+
+<div class="section">
+
+    <h2>🤖 AgriGuardian AI Assistant</h2>
+
+
+    <textarea
+        id="assistantQuestion"
+        placeholder="Ask your farming question..."></textarea>
+
+
+    <div class="form-grid">
+
+        <div>
+
+            <label>Language</label>
+
+            <select id="assistantLanguage">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="hi">
+                    Hindi
+                </option>
+
+                <option value="mr">
+                    Marathi
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="button"
+        onclick="askAssistant()">
+
+        Ask AgriGuardian AI
+
+    </button>
+
+
+    <div
+        id="assistantResult"
+        class="result assistant-response"
+        style="display:none;">
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+// ======================================================
+// API BASE URL
+// ======================================================
+
+const API_URL =
+    "http://127.0.0.1:8000";
+
+
+// ======================================================
+// SHOW RESULT
+// ======================================================
+
+function showResult(
+    elementId,
+    message,
+    isError = false
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+    element.style.display = "block";
+
+    element.textContent = message;
+
+    if (isError) {
+
+        element.classList.add("error");
+
+    } else {
+
+        element.classList.remove("error");
+
+    }
+
+}
+
+
+// ======================================================
+// WELCOME USER
+// ======================================================
+
+function loadWelcomeMessage() {
+
+    const farmerName =
+        localStorage.getItem("farmerName");
+
+    if (farmerName) {
+
+        document.getElementById(
+            "welcomeMessage"
+        ).textContent =
+            "Welcome, " + farmerName + "!";
+
+    }
+
+}
+
+
+// ======================================================
+// WEATHER
+// ======================================================
+
+async function getWeather() {
+
+    const city =
+        document.getElementById(
+            "weatherCity"
+        ).value.trim();
+
+
+    if (!city) {
+
+        showResult(
+            "weatherResult",
+            "Please enter a city.",
+            true
+        );
+
+        return;
+    }
+
+
+    showResult(
+        "weatherResult",
+        "Loading weather..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/weather?city=" +
+                encodeURIComponent(city)
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            showResult(
+                "weatherResult",
+                "Weather error: " +
+                JSON.stringify(data),
+                true
+            );
+
+            return;
+        }
+
+
+        const message =
+            "City: " +
+            data.city +
+            "\n\n" +
+
+            "Temperature: " +
+            data.temperature +
+            " °C\n" +
+
+            "Feels Like: " +
+            data.feels_like +
+            " °C\n" +
+
+            "Humidity: " +
+            data.humidity +
+            "%\n" +
+
+            "Wind Speed: " +
+            data.wind_speed +
+            " m/s\n" +
+
+            "Condition: " +
+            data.description;
+
+
+        showResult(
+            "weatherResult",
+            message
+        );
+
+
+    } catch (error) {
+
+        showResult(
+            "weatherResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// CROP RECOMMENDATION
+// ======================================================
+
+async function getCropRecommendation() {
+
+    const data = {
+
+        location:
+            document.getElementById(
+                "cropLocation"
+            ).value.trim(),
+
+        soil_type:
+            document.getElementById(
+                "cropSoil"
+            ).value.trim(),
+
+        season:
+            document.getElementById(
+                "cropSeason"
+            ).value,
+
+        water_availability:
+            document.getElementById(
+                "cropWater"
+            ).value
+
+    };
+
+
+    showResult(
+        "cropResult",
+        "Getting crop recommendations..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/crop-recommendation",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "cropResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        showResult(
+            "cropResult",
+            result.recommendation
+        );
+
+
+    } catch (error) {
+
+        showResult(
+            "cropResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// PEST & DISEASE
+// ======================================================
+
+async function getPestDisease() {
+
+    const data = {
+
+        crop:
+            document.getElementById(
+                "pestCrop"
+            ).value.trim(),
+
+        symptoms:
+            document.getElementById(
+                "pestSymptoms"
+            ).value.trim(),
+
+        location:
+            document.getElementById(
+                "pestLocation"
+            ).value.trim(),
+
+        language:
+            document.getElementById(
+                "pestLanguage"
+            ).value
+
+    };
+
+
+    showResult(
+        "pestResult",
+        "Analyzing crop problem..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/pest-disease",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "pestResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        showResult(
+            "pestResult",
+            result.answer
+        );
+
+
+    } catch (error) {
+
+        showResult(
+            "pestResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// IRRIGATION
+// ======================================================
+
+async function getIrrigationGuidance() {
+
+    const data = {
+
+        crop:
+            document.getElementById(
+                "irrigationCrop"
+            ).value.trim(),
+
+        location:
+            document.getElementById(
+                "irrigationLocation"
+            ).value.trim(),
+
+        soil_type:
+            document.getElementById(
+                "irrigationSoil"
+            ).value.trim(),
+
+        growth_stage:
+            document.getElementById(
+                "growthStage"
+            ).value,
+
+        water_availability:
+            document.getElementById(
+                "irrigationWater"
+            ).value,
+
+        language:
+            document.getElementById(
+                "irrigationLanguage"
+            ).value
+
+    };
+
+
+    showResult(
+        "irrigationResult",
+        "Preparing irrigation guidance..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/irrigation",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "irrigationResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        showResult(
+            "irrigationResult",
+            result.answer
+        );
+
+
+    } catch (error) {
+
+        showResult(
+            "irrigationResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// MARKET PRICE COMPARISON
+// ======================================================
+
+async function compareMarkets() {
+
+    const data = {
+
+        crop:
+            document.getElementById(
+                "marketCrop"
+            ).value.trim(),
+
+        location:
+            document.getElementById(
+                "marketLocation"
+            ).value.trim(),
+
+        market1:
+            document.getElementById(
+                "market1"
+            ).value.trim(),
+
+        price1:
+            Number(
+                document.getElementById(
+                    "price1"
+                ).value
+            ),
+
+        market2:
+            document.getElementById(
+                "market2"
+            ).value.trim(),
+
+        price2:
+            Number(
+                document.getElementById(
+                    "price2"
+                ).value
+            ),
+
+        market3:
+            document.getElementById(
+                "market3"
+            ).value.trim(),
+
+        price3:
+            Number(
+                document.getElementById(
+                    "price3"
+                ).value
+            ),
+
+        quantity:
+            Number(
+                document.getElementById(
+                    "marketQuantity"
+                ).value
+            ),
+
+        language:
+            document.getElementById(
+                "marketLanguage"
+            ).value
+
+    };
+
+
+    showResult(
+        "marketResult",
+        "Comparing markets..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/market-prices",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "marketResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        let html =
+            "<h3>Market Comparison</h3>";
+
+
+        html +=
+            "<table>" +
+
+            "<tr>" +
+
+            "<th>Market</th>" +
+
+            "<th>Price</th>" +
+
+            "<th>Gross Revenue</th>" +
+
+            "</tr>";
+
+
+        result.markets.forEach(
+            function(market) {
+
+                html +=
+
+                    "<tr>" +
+
+                    "<td>" +
+                    market.market +
+                    "</td>" +
+
+                    "<td>₹" +
+                    market.price +
+                    "</td>" +
+
+                    "<td>₹" +
+                    market.gross_revenue +
+                    "</td>" +
+
+                    "</tr>";
+
+            }
+        );
+
+
+        html += "</table>";
+
+
+        html +=
+            "<div class='recommendation-box'>" +
+
+            "<h3>AI Market Analysis</h3>" +
+
+            "<p>" +
+            result.analysis +
+            "</p>" +
+
+            "</div>";
+
+
+        const element =
+            document.getElementById(
+                "marketResult"
+            );
+
+        element.style.display = "block";
+
+        element.innerHTML = html;
+
+
+    } catch (error) {
+
+        showResult(
+            "marketResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// NET RETURN
+// ======================================================
+
+async function calculateNetReturn() {
+
+    const data = {
+
+        crop:
+            document.getElementById(
+                "netCrop"
+            ).value.trim(),
+
+        quantity:
+            Number(
+                document.getElementById(
+                    "netQuantity"
+                ).value
+            ),
+
+        price_per_unit:
+            Number(
+                document.getElementById(
+                    "netPrice"
+                ).value
+            ),
+
+        transport_cost:
+            Number(
+                document.getElementById(
+                    "transportCost"
+                ).value
+            ),
+
+        commission:
+            Number(
+                document.getElementById(
+                    "commission"
+                ).value
+            ),
+
+        loading_cost:
+            Number(
+                document.getElementById(
+                    "loadingCost"
+                ).value
+            ),
+
+        other_costs:
+            Number(
+                document.getElementById(
+                    "otherCosts"
+                ).value
+            )
+
+    };
+
+
+    showResult(
+        "netResult",
+        "Calculating..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/net-return",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "netResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        const message =
+
+            "Crop: " +
+            result.crop +
+
+            "\n\n" +
+
+            "Quantity: " +
+            result.quantity +
+
+            "\n" +
+
+            "Price per Unit: ₹" +
+            result.price_per_unit +
+
+            "\n\n" +
+
+            "Gross Revenue: ₹" +
+            result.gross_revenue +
+
+            "\n\n" +
+
+            "Transport Cost: ₹" +
+            result.transport_cost +
+
+            "\n" +
+
+            "Commission: ₹" +
+            result.commission +
+
+            "\n" +
+
+            "Loading Cost: ₹" +
+            result.loading_cost +
+
+            "\n" +
+
+            "Other Costs: ₹" +
+            result.other_costs +
+
+            "\n\n" +
+
+            "Total Costs: ₹" +
+            result.total_costs +
+
+            "\n\n" +
+
+            "NET RETURN: ₹" +
+            result.net_return +
+
+            "\n" +
+
+            "Net Return Percentage: " +
+            result.net_return_percentage +
+            "%";
+
+
+        showResult(
+            "netResult",
+            message
+        );
+
+
+    } catch (error) {
+
+        showResult(
+            "netResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// SMART MARKET RECOMMENDATION
+// ======================================================
+
+async function getSmartMarketRecommendation() {
+
+    const data = {
+
+        crop:
+            document.getElementById(
+                "smartCrop"
+            ).value.trim(),
+
+        quantity:
+            Number(
+                document.getElementById(
+                    "smartQuantity"
+                ).value
+            ),
+
+
+        market1:
+            document.getElementById(
+                "smartMarket1"
+            ).value.trim(),
+
+        price1:
+            Number(
+                document.getElementById(
+                    "smartPrice1"
+                ).value
+            ),
+
+        transport1:
+            Number(
+                document.getElementById(
+                    "smartTransport1"
+                ).value
+            ),
+
+        commission1:
+            Number(
+                document.getElementById(
+                    "smartCommission1"
+                ).value
+            ),
+
+        loading1:
+            Number(
+                document.getElementById(
+                    "smartLoading1"
+                ).value
+            ),
+
+        other1:
+            Number(
+                document.getElementById(
+                    "smartOther1"
+                ).value
+            ),
+
+
+        market2:
+            document.getElementById(
+                "smartMarket2"
+            ).value.trim(),
+
+        price2:
+            Number(
+                document.getElementById(
+                    "smartPrice2"
+                ).value
+            ),
+
+        transport2:
+            Number(
+                document.getElementById(
+                    "smartTransport2"
+                ).value
+            ),
+
+        commission2:
+            Number(
+                document.getElementById(
+                    "smartCommission2"
+                ).value
+            ),
+
+        loading2:
+            Number(
+                document.getElementById(
+                    "smartLoading2"
+                ).value
+            ),
+
+        other2:
+            Number(
+                document.getElementById(
+                    "smartOther2"
+                ).value
+            ),
+
+
+        market3:
+            document.getElementById(
+                "smartMarket3"
+            ).value.trim(),
+
+        price3:
+            Number(
+                document.getElementById(
+                    "smartPrice3"
+                ).value
+            ),
+
+        transport3:
+            Number(
+                document.getElementById(
+                    "smartTransport3"
+                ).value
+            ),
+
+        commission3:
+            Number(
+                document.getElementById(
+                    "smartCommission3"
+                ).value
+            ),
+
+        loading3:
+            Number(
+                document.getElementById(
+                    "smartLoading3"
+                ).value
+            ),
+
+        other3:
+            Number(
+                document.getElementById(
+                    "smartOther3"
+                ).value
+            )
+
+    };
+
+
+    showResult(
+        "smartMarketResult",
+        "Analyzing markets and calculating the best net return..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/smart-market-recommendation",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(data)
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "smartMarketResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        // ------------------------------------------
+        // BUILD MARKET TABLE
+        // ------------------------------------------
+
+        let html =
+
+            "<h3>🏆 Smart Market Analysis</h3>" +
+
+            "<table>" +
+
+            "<tr>" +
+
+            "<th>Market</th>" +
+
+            "<th>Price</th>" +
+
+            "<th>Gross Revenue</th>" +
+
+            "<th>Total Costs</th>" +
+
+            "<th>Net Return</th>" +
+
+            "</tr>";
+
+
+        result.markets.forEach(
+            function(market) {
+
+                const isRecommended =
+                    market.market ===
+                    result.recommended_market;
+
+
+                html +=
+
+                    "<tr class='" +
+                    (isRecommended
+                        ? "recommended"
+                        : "") +
+                    "'>" +
+
+                    "<td>" +
+                    market.market +
+                    (isRecommended
+                        ? " 🏆"
+                        : "") +
+                    "</td>" +
+
+                    "<td>₹" +
+                    market.price +
+                    "</td>" +
+
+                    "<td>₹" +
+                    market.gross_revenue +
+                    "</td>" +
+
+                    "<td>₹" +
+                    market.total_costs +
+                    "</td>" +
+
+                    "<td>₹" +
+                    market.net_return +
+                    "</td>" +
+
+                    "</tr>";
+
+            }
+        );
+
+
+        html += "</table>";
+
+
+        // ------------------------------------------
+        // RECOMMENDATION
+        // ------------------------------------------
+
+        html +=
+
+            "<div class='recommendation-box'>" +
+
+            "<h3>🏆 Recommended Market</h3>" +
+
+            "<p>" +
+
+            "<strong>" +
+
+            result.recommended_market +
+
+            "</strong>" +
+
+            "</p>" +
+
+            "<p>" +
+
+            "Expected Net Return: " +
+
+            "<strong>₹" +
+
+            result.recommended_net_return +
+
+            "</strong>" +
+
+            "</p>" +
+
+            "<p>" +
+
+            "Highest Price Market: " +
+
+            "<strong>" +
+
+            result.highest_price_market +
+
+            "</strong>" +
+
+            "</p>" +
+
+            "<p>" +
+
+            result.analysis +
+
+            "</p>" +
+
+            "</div>";
+
+
+        const element =
+            document.getElementById(
+                "smartMarketResult"
+            );
+
+
+        element.style.display =
+            "block";
+
+
+        element.innerHTML =
+            html;
+
+
+    } catch (error) {
+
+        showResult(
+            "smartMarketResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// AI ASSISTANT
+// ======================================================
+
+async function askAssistant() {
+
+    const question =
+        document.getElementById(
+            "assistantQuestion"
+        ).value.trim();
+
+
+    const language =
+        document.getElementById(
+            "assistantLanguage"
+        ).value;
+
+
+    if (!question) {
+
+        showResult(
+            "assistantResult",
+            "Please enter a question.",
+            true
+        );
+
+        return;
+    }
+
+
+    showResult(
+        "assistantResult",
+        "AgriGuardian AI is thinking..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/ask",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        question:
+                            question,
+
+                        language:
+                            language
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            showResult(
+                "assistantResult",
+                JSON.stringify(result),
+                true
+            );
+
+            return;
+        }
+
+
+        showResult(
+            "assistantResult",
+            result.answer
+        );
+
+
+    } catch (error) {
+
+        showResult(
+            "assistantResult",
+            "Unable to connect to backend.",
+            true
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// LOGOUT
+// ======================================================
+
+function logout() {
+
+    localStorage.removeItem(
+        "farmerName"
+    );
+
+    localStorage.removeItem(
+        "farmerEmail"
+    );
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+// ======================================================
+// START
+// ======================================================
+
+loadWelcomeMessage();
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Sign Up - AgriGuardian AI</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.35),
+                    rgba(0, 0, 0, 0.35)
+                ),
+                url("https://images.unsplash.com/photo-1500382017468-9049fed747ef")
+                center / cover no-repeat;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 30px;
+        }
+
+
+        .signup-card {
+
+            background: rgba(255, 255, 255, 0.96);
+
+            width: 400px;
+
+            max-width: 100%;
+
+            padding: 40px 35px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .logo {
+
+            font-size: 42px;
+
+            margin-bottom: 5px;
+        }
+
+
+        h1 {
+
+            margin: 0;
+
+            font-size: 30px;
+
+            color: #245b28;
+        }
+
+
+        .farmer-text {
+
+            color: #2e7d32;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            margin-top: 12px;
+        }
+
+
+        h2 {
+
+            margin-top: 30px;
+
+            margin-bottom: 25px;
+
+            color: #333;
+        }
+
+
+        .form-group {
+
+            text-align: left;
+
+            margin-bottom: 20px;
+        }
+
+
+        label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #cccccc;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+        }
+
+
+        input:focus {
+
+            outline: none;
+
+            border-color: #2e7d32;
+        }
+
+
+        button {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2e7d32;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+        }
+
+
+        button:hover {
+
+            background: #256628;
+        }
+
+
+        #message {
+
+            margin-top: 15px;
+
+            font-weight: bold;
+        }
+
+
+        .login-text {
+
+            margin-top: 25px;
+
+            color: #444;
+        }
+
+
+        .login-text a {
+
+            color: #2e7d32;
+
+            font-weight: bold;
+
+            text-decoration: none;
+        }
+
+
+        .footer-message {
+
+            margin-top: 25px;
+
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="signup-card">
+
+
+        <div class="logo">
+            🌱
+        </div>
+
+
+        <h1>
+            AgriGuardian AI
+        </h1>
+
+
+        <p class="farmer-text">
+            Proud of Our Farmers 🌾
+        </p>
+
+
+        <h2>
+            Create Your Account
+        </h2>
+
+
+        <form id="signupForm">
+
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a password"
+                    required
+                >
+
+            </div>
+
+
+            <button type="submit">
+                🌱 Create Account
+            </button>
+
+
+        </form>
+
+
+        <p id="message"></p>
+
+
+        <p class="login-text">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </p>
+
+
+        <p class="footer-message">
+
+            Your hard work feeds the world. 🌾<br>
+
+            AgriGuardian AI is here to support you.
+
+        </p>
+
+
+    </div>
+
+
+    <script>
+
+        document
+            .getElementById("signupForm")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById("name").value;
+
+                const email =
+                    document.getElementById("email").value;
+
+                const password =
+                    document.getElementById("password").value;
+
+                const message =
+                    document.getElementById("message");
+
+
+                message.innerText =
+                    "Creating your account...";
+
+
+                try {
+
+                    const response = await fetch(
+                        "http://127.0.0.1:8000/signup",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name: name,
+                                email: email,
+                                password: password
+                            })
+                        }
+                    );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (response.ok) {
+
+                        message.innerText =
+                            "Account created successfully! 🌱";
+
+                        document
+                            .getElementById("signupForm")
+                            .reset();
+
+                    } else {
+
+                        message.innerText =
+                            data.detail || "Signup failed.";
+
+                    }
+
+
+                } catch (error) {
+
+                    message.innerText =
+                        "Could not connect to AgriGuardian backend.";
+
+                }
+
+            });
+
+    </script>
+
+
+</body>
+
+</html>

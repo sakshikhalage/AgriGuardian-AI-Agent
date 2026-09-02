@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AgriGuardian AI</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        .farmer-message {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 300px;
+            padding: 12px;
+        }
+
+        button {
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 id="title">🌱 AgriGuardian AI Agent</h1>
+
+    <p id="subtitle">Your Smart Farming Assistant</p>
+
+    <h2>Proud of Our Farmers 🌾</h2>
+
+    <p class="farmer-message">
+        Inspired by Their Hard Work. Built to Support Their Future.
+    </p>
+
+    <label for="language" id="languageLabel">
+        Select Language:
+    </label>
+
+    <select id="language" onchange="changeLanguage()">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="mr">मराठी</option>
+    </select>
+
+    <br><br>
+
+    <input
+        id="question"
+        type="text"
+        placeholder="Ask your farming question"
+    >
+
+    <button onclick="askQuestion()" id="askButton">
+        Ask AI
+    </button>
+
+    <p id="answer"></p>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
