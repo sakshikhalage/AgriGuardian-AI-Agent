@@ -1,14 +1,11 @@
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
 from google import genai
-
-from backend.database import create_users_table, get_connection
+from database import create_users_table, get_connection
 
 from pwdlib import PasswordHash
 
@@ -16,38 +13,27 @@ import os
 import requests
 
 
-# ============================================================
+# =========================
 # LOAD ENVIRONMENT VARIABLES
-# ============================================================
+# =========================
 
 load_dotenv()
 
 
-# ============================================================
+# =========================
 # FASTAPI APP
-# ============================================================
+# =========================
 
 app = FastAPI(
     title="AgriGuardian AI Agent",
-    description="AI-powered farming assistant",
+    description="AI-powered agriculture assistant for farmers",
     version="1.0.0"
 )
 
 
-# ============================================================
-# FRONTEND
-# ============================================================
-
-app.mount(
-    "/frontend",
-    StaticFiles(directory="frontend"),
-    name="frontend"
-)
-
-
-# ============================================================
+# =========================
 # CORS
-# ============================================================
+# =========================
 
 app.add_middleware(
     CORSMiddleware,
@@ -58,56 +44,53 @@ app.add_middleware(
 )
 
 
-# ============================================================
+# =========================
 # DATABASE
-# ============================================================
+# =========================
 
 create_users_table()
 
 
-# ============================================================
+# =========================
 # PASSWORD HASHING
-# ============================================================
+# =========================
 
 password_hash = PasswordHash.recommended()
 
 
-# ============================================================
+# =========================
 # GEMINI
-# ============================================================
+# =========================
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+gemini_api_key = os.getenv("GEMINI_API_KEY")
 
-client = genai.Client(
-    api_key=GEMINI_API_KEY
-)
+if gemini_api_key:
+    client = genai.Client(api_key=gemini_api_key)
+else:
+    client = None
 
 
-# ============================================================
+# =========================
 # REQUEST MODELS
-# ============================================================
+# =========================
 
 class Question(BaseModel):
-
     question: str
     language: str = "en"
 
 
 class SignupRequest(BaseModel):
-
     name: str
     email: str
     password: str
 
 
 class LoginRequest(BaseModel):
-
     email: str
     password: str
 
 
 class CropRecommendationRequest(BaseModel):
-
     location: str
     soil_type: str
     season: str
@@ -115,7 +98,6 @@ class CropRecommendationRequest(BaseModel):
 
 
 class PestDiseaseRequest(BaseModel):
-
     crop: str
     symptoms: str
     location: str
@@ -123,7 +105,6 @@ class PestDiseaseRequest(BaseModel):
 
 
 class IrrigationRequest(BaseModel):
-
     crop: str
     location: str
     soil_type: str
@@ -133,49 +114,30 @@ class IrrigationRequest(BaseModel):
 
 
 class MarketPriceRequest(BaseModel):
-
     crop: str
     location: str
-
     market1: str
     price1: float
-
     market2: str
     price2: float
-
     market3: str
     price3: float
-
     quantity: float = 100
-
     language: str = "en"
 
 
 class NetReturnRequest(BaseModel):
-
     crop: str
-
     quantity: float
-
     price_per_unit: float
-
     transport_cost: float
-
     commission: float
-
     loading_cost: float
-
     other_costs: float = 0
 
 
-# ============================================================
-# NEW SMART MARKET REQUEST
-# ============================================================
-
 class SmartMarketRecommendationRequest(BaseModel):
-
     crop: str
-
     quantity: float
 
     market1: str
@@ -200,80 +162,72 @@ class SmartMarketRecommendationRequest(BaseModel):
     other3: float = 0
 
 
-# ============================================================
-# HOME
-# ============================================================
+# =========================
+# FRONTEND PAGES
+# =========================
 
 @app.get("/")
 def home():
+    return FileResponse("index.html")
 
-    return {
-        "message": "AgriGuardian AI Agent is running!"
-    }
-
-
-# ============================================================
-# FRONTEND ROUTES
-# ============================================================
 
 @app.get("/index.html")
 def index_page():
-
-    return {
-        "message": "AgriGuardian frontend is available at /frontend/index.html"
-    }
+    return FileResponse("index.html")
 
 
 @app.get("/login.html")
 def login_page():
-
-    return {
-        "message": "AgriGuardian login page is available at /frontend/login.html"
-    }
+    return FileResponse("login.html")
 
 
 @app.get("/signup.html")
 def signup_page():
-
-    return {
-        "message": "AgriGuardian signup page is available at /frontend/signup.html"
-    }
+    return FileResponse("signup.html")
 
 
 @app.get("/dashboard.html")
 def dashboard_page():
-
-    return {
-        "message": "AgriGuardian dashboard is available at /frontend/dashboard.html"
-    }
+    return FileResponse("dashboard.html")
 
 
-# ============================================================
+@app.get("/script.js")
+def script_file():
+    return FileResponse("script.js")
+
+
+# =========================
 # AI ASSISTANT
-# ============================================================
+# =========================
 
 @app.post("/ask")
 def ask_ai(data: Question):
 
-    try:
+    if client is None:
+        raise HTTPException(
+            status_code=500,
+            detail="Gemini API key is not configured."
+        )
 
-        prompt = f"""
-You are AgriGuardian AI, an agricultural assistant for farmers.
+    prompt = f"""
+You are AgriGuardian AI, an agriculture assistant.
 
-Answer the farmer's question clearly and practically.
+Help farmers with practical and simple farming advice.
 
-Question:
+User question:
 {data.question}
 
 Language:
 {data.language}
 
-Give simple farming advice.
+Give a clear, useful answer.
 
-Do not claim certainty when expert inspection is needed.
-Do not recommend dangerous pesticide use without proper label
-instructions and local agricultural expert guidance.
+Avoid dangerous pesticide or chemical recommendations.
+For serious crop disease or chemical decisions,
+advise consulting a local agricultural expert.
 """
+
+    try:
 
         response = client.models.generate_content(
             model="gemini-3.6-flash",
@@ -293,9 +247,9 @@ instructions and local agricultural expert guidance.
         }
 
 
-# ============================================================
+# =========================
 # SIGNUP
-# ============================================================
+# =========================
 
 @app.post("/signup")
 def signup(data: SignupRequest):
@@ -313,14 +267,12 @@ def signup(data: SignupRequest):
 
         raise HTTPException(
             status_code=400,
-            detail="Email already registered"
+            detail="Email already registered."
         )
 
-    hashed_password = password_hash.hash(
-        data.password
-    )
+    hashed_password = password_hash.hash(data.password)
 
-    connection.execute(
+    cursor = connection.execute(
         """
         INSERT INTO users (name, email, password)
         VALUES (?, ?, ?)
@@ -334,17 +286,20 @@ def signup(data: SignupRequest):
 
     connection.commit()
 
+    user_id = cursor.lastrowid
+
     connection.close()
 
     return {
         "success": True,
-        "message": "Signup successful"
+        "message": "Account created successfully.",
+        "user_id": user_id
     }
 
 
-# ============================================================
+# =========================
 # LOGIN
-# ============================================================
+# =========================
 
 @app.post("/login")
 def login(data: LoginRequest):
@@ -366,7 +321,7 @@ def login(data: LoginRequest):
 
         raise HTTPException(
             status_code=401,
-            detail="Invalid email or password"
+            detail="Invalid email or password."
         )
 
     if not password_hash.verify(
@@ -376,31 +331,21 @@ def login(data: LoginRequest):
 
         raise HTTPException(
             status_code=401,
-            detail="Invalid email or password"
+            detail="Invalid email or password."
         )
 
     return {
-
         "success": True,
-
-        "message": "Login successful",
-
-        "user": {
-
-            "id": user["id"],
-
-            "name": user["name"],
-
-            "email": user["email"]
-
-        }
-
+        "message": "Login successful.",
+        "user_id": user["id"],
+        "name": user["name"],
+        "email": user["email"]
     }
 
 
-# ============================================================
+# =========================
 # WEATHER
-# ============================================================
+# =========================
 
 @app.get("/weather")
 def weather(city: str):
@@ -411,19 +356,15 @@ def weather(city: str):
 
         raise HTTPException(
             status_code=500,
-            detail="OpenWeather API key not configured"
+            detail="OpenWeather API key is not configured."
         )
 
     url = "https://api.openweathermap.org/data/2.5/weather"
 
     params = {
-
         "q": city,
-
         "appid": api_key,
-
         "units": "metric"
-
     }
 
     try:
@@ -434,58 +375,54 @@ def weather(city: str):
             timeout=10
         )
 
-        if response.status_code != 200:
-
-            return {
-                "success": False,
-                "error": response.json()
-            }
-
         data = response.json()
 
+        if response.status_code != 200:
+
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=data.get(
+                    "message",
+                    "Unable to get weather."
+                )
+            )
+
         return {
-
-            "success": True,
-
             "city": data["name"],
-
             "country": data["sys"]["country"],
-
             "temperature": data["main"]["temp"],
-
             "feels_like": data["main"]["feels_like"],
-
             "humidity": data["main"]["humidity"],
-
             "wind_speed": data["wind"]["speed"],
-
             "description": data["weather"][0]["description"]
-
         }
 
     except requests.RequestException as e:
 
         raise HTTPException(
             status_code=500,
-            detail=f"Weather API error: {str(e)}"
+            detail=f"Weather service error: {str(e)}"
         )
 
 
-# ============================================================
+# =========================
 # CROP RECOMMENDATION
-# ============================================================
+# =========================
 
 @app.post("/crop-recommendation")
 def crop_recommendation(
     data: CropRecommendationRequest
 ):
 
-    try:
+    if client is None:
 
-        prompt = f"""
-You are AgriGuardian AI.
+        raise HTTPException(
+            status_code=500,
+            detail="Gemini API key is not configured."
+        )
 
-Recommend suitable crops for a farmer.
+    prompt = f"""
+You are an agriculture expert helping a farmer.
 
 Location:
 {data.location}
@@ -499,17 +436,23 @@ Season:
 Water availability:
 {data.water_availability}
 
-Provide:
+Recommend the top 3 suitable crops.
 
-1. Top 3 suitable crops
-2. Why each crop is suitable
-3. Basic farming advice
-4. Important precautions
-5. Best overall crop
-6. General advice
+For each crop explain:
 
-Keep the answer practical and easy for a farmer to understand.
+1. Why it is suitable
+2. Basic farming advice
+3. Important precautions
+
+Also provide:
+
+- Best overall crop
+- General advice for the farmer
+
+Keep the answer simple and practical.
 """
+
+    try:
 
         response = client.models.generate_content(
             model="gemini-3.6-flash",
@@ -517,48 +460,43 @@ Keep the answer practical and easy for a farmer to understand.
         )
 
         return {
-
             "success": True,
-
             "recommendation": response.text
-
         }
 
     except Exception as e:
 
         return {
-
             "success": False,
-
             "error": str(e)
-
         }
 
 
-# ============================================================
+# =========================
 # PEST & DISEASE
-# ============================================================
+# =========================
 
 @app.post("/pest-disease")
-def pest_disease(
-    data: PestDiseaseRequest
-):
+def pest_disease(data: PestDiseaseRequest):
 
-    try:
+    if client is None:
 
-        prompt = f"""
-You are AgriGuardian AI, an agricultural assistant.
+        raise HTTPException(
+            status_code=500,
+            detail="Gemini API key is not configured."
+        )
 
-Analyze the following crop problem.
+    prompt = f"""
+You are an agriculture assistant.
 
 Crop:
 {data.crop}
 
+Observed symptoms:
+{data.symptoms}
+
 Location:
 {data.location}
-
-Symptoms:
-{data.symptoms}
 
 Language:
 {data.language}
@@ -566,17 +504,26 @@ Language:
 Provide:
 
 1. Possible pest or disease
-2. Why it may be occurring
-3. Common signs
-4. Immediate steps
+2. Why it may match the symptoms
+3. Common signs to check
+4. Immediate safe steps
 5. Prevention
 6. When to contact an agricultural expert
 
-Diagnosis is not certain without proper inspection.
+Important:
 
-Do not recommend dangerous pesticide use without
-proper product-label instructions and local expert guidance.
+Do not claim the diagnosis is certain.
+
+Do not recommend dangerous pesticide use.
+
+If chemical control is discussed,
+advise following the product label
+and local agricultural expert guidance.
+
+Use simple language.
 """
+
+    try:
 
         response = client.models.generate_content(
             model="gemini-3.6-flash",
@@ -584,39 +531,34 @@ proper product-label instructions and local expert guidance.
         )
 
         return {
-
             "success": True,
-
             "answer": response.text
-
         }
 
     except Exception as e:
 
         return {
-
             "success": False,
-
             "error": str(e)
-
         }
 
 
-# ============================================================
+# =========================
 # IRRIGATION
-# ============================================================
+# =========================
 
 @app.post("/irrigation")
-def irrigation(
-    data: IrrigationRequest
-):
+def irrigation(data: IrrigationRequest):
 
-    try:
+    if client is None:
 
-        prompt = f"""
-You are AgriGuardian AI.
+        raise HTTPException(
+            status_code=500,
+            detail="Gemini API key is not configured."
+        )
 
-Give practical irrigation guidance.
+    prompt = f"""
+You are an agriculture irrigation advisor.
 
 Crop:
 {data.crop}
@@ -636,19 +578,24 @@ Water availability:
 Language:
 {data.language}
 
-Explain:
+Provide:
 
-1. Suggested irrigation frequency
-2. Suitable timing
-3. Signs of overwatering
-4. Signs of underwatering
-5. Water-saving methods
-6. Important precautions
+1. Recommended irrigation frequency
+2. General amount and timing guidance
+3. Best time of day to irrigate
+4. Signs of overwatering
+5. Signs of underwatering
+6. Water-saving practices
+7. Important precautions
 
-Avoid false precision. Mention that actual irrigation
-depends on rainfall, soil moisture, crop condition,
-temperature and local conditions.
+Do not give false precision.
+
+Consider weather, soil and crop stage.
+
+Use simple practical language.
 """
+
+    try:
 
         response = client.models.generate_content(
             model="gemini-3.6-flash",
@@ -656,38 +603,30 @@ temperature and local conditions.
         )
 
         return {
-
             "success": True,
-
             "answer": response.text
-
         }
 
     except Exception as e:
 
         return {
-
             "success": False,
-
             "error": str(e)
-
         }
 
 
-# ============================================================
+# =========================
 # MARKET PRICE COMPARISON
-# ============================================================
+# =========================
 
 @app.post("/market-prices")
-def market_prices(
-    data: MarketPriceRequest
-):
+def market_prices(data: MarketPriceRequest):
 
     if data.quantity <= 0:
 
         raise HTTPException(
             status_code=400,
-            detail="Quantity must be greater than zero"
+            detail="Quantity must be greater than zero."
         )
 
     prices = [
@@ -711,24 +650,27 @@ def market_prices(
 
             raise HTTPException(
                 status_code=400,
-                detail="Market prices cannot be negative"
+                detail="Market price cannot be negative."
             )
-
-        item["gross_revenue"] = (
-            item["price"] * data.quantity
-        )
 
     prices.sort(
         key=lambda x: x["price"],
         reverse=True
     )
 
-    try:
+    highest_price = prices[0]
+
+    gross_revenue = (
+        highest_price["price"]
+        * data.quantity
+    )
+
+    analysis = ""
+
+    if client:
 
         prompt = f"""
-You are AgriGuardian AI.
-
-Analyze these market prices.
+Analyze these market prices for a farmer.
 
 Crop:
 {data.crop}
@@ -739,202 +681,157 @@ Location:
 Quantity:
 {data.quantity}
 
-Market data:
+Markets:
 {prices}
 
 Explain:
 
 1. Which market has the highest listed price
-2. Gross revenue at each market
-3. Why the highest price does not always mean highest profit
-4. Transport costs
-5. Commission
-6. Loading/unloading costs
-7. Other selling costs
+2. Expected gross revenue at that price
+3. Important factors affecting actual profit
+4. Why the highest price does not always mean the highest profit
+5. Transport, commission, loading and unloading costs
 
-The farmer should consider net return rather than price alone.
-
-Language:
-{data.language}
+Give practical advice.
 """
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
+        try:
 
-        return {
+            response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
+            )
 
-            "success": True,
+            analysis = response.text
 
-            "crop": data.crop,
+        except Exception:
 
-            "location": data.location,
+            analysis = (
+                "Highest listed price may not always result "
+                "in the highest profit because transport "
+                "and selling costs can differ."
+            )
 
-            "quantity": data.quantity,
-
-            "markets": prices,
-
-            "analysis": response.text
-
-        }
-
-    except Exception as e:
-
-        return {
-
-            "success": False,
-
-            "error": str(e)
-
-        }
+    return {
+        "success": True,
+        "crop": data.crop,
+        "location": data.location,
+        "quantity": data.quantity,
+        "markets": prices,
+        "analysis": analysis
+    }
 
 
-# ============================================================
+# =========================
 # NET RETURN CALCULATOR
-# ============================================================
+# =========================
 
 @app.post("/net-return")
-def net_return(
-    data: NetReturnRequest
-):
+def net_return(data: NetReturnRequest):
 
     if data.quantity <= 0:
 
         raise HTTPException(
             status_code=400,
-            detail="Quantity must be greater than zero"
+            detail="Quantity must be greater than zero."
         )
 
     if data.price_per_unit < 0:
 
         raise HTTPException(
             status_code=400,
-            detail="Price cannot be negative"
+            detail="Price cannot be negative."
         )
 
     costs = [
-
         data.transport_cost,
-
         data.commission,
-
         data.loading_cost,
-
         data.other_costs
-
     ]
 
     if any(cost < 0 for cost in costs):
 
         raise HTTPException(
             status_code=400,
-            detail="Costs cannot be negative"
+            detail="Costs cannot be negative."
         )
 
     gross_revenue = (
-        data.quantity *
-        data.price_per_unit
+        data.quantity
+        * data.price_per_unit
     )
 
     total_costs = sum(costs)
 
     net_return = (
-        gross_revenue -
-        total_costs
+        gross_revenue
+        - total_costs
     )
 
     if gross_revenue > 0:
 
         net_return_percentage = (
-            net_return /
-            gross_revenue
-        ) * 100
+            net_return
+            / gross_revenue
+            * 100
+        )
 
     else:
 
         net_return_percentage = 0
 
     return {
-
         "success": True,
-
         "crop": data.crop,
-
-        "quantity": data.quantity,
-
-        "price_per_unit": data.price_per_unit,
-
+        "quantity": round(data.quantity, 2),
+        "price_per_unit": round(
+            data.price_per_unit, 2
+        ),
         "gross_revenue": round(
-            gross_revenue,
-            2
+            gross_revenue, 2
         ),
-
         "transport_cost": round(
-            data.transport_cost,
-            2
+            data.transport_cost, 2
         ),
-
         "commission": round(
-            data.commission,
-            2
+            data.commission, 2
         ),
-
         "loading_cost": round(
-            data.loading_cost,
-            2
+            data.loading_cost, 2
         ),
-
         "other_costs": round(
-            data.other_costs,
-            2
+            data.other_costs, 2
         ),
-
         "total_costs": round(
-            total_costs,
-            2
+            total_costs, 2
         ),
-
         "net_return": round(
-            net_return,
-            2
+            net_return, 2
         ),
-
         "net_return_percentage": round(
-            net_return_percentage,
-            2
+            net_return_percentage, 2
         )
-
     }
 
 
-# ============================================================
+# =========================
 # SMART MARKET RECOMMENDATION
-# ============================================================
+# =========================
 
 @app.post("/smart-market-recommendation")
 def smart_market_recommendation(
     data: SmartMarketRecommendationRequest
 ):
 
-    # --------------------------------------------------------
-    # BASIC VALIDATION
-    # --------------------------------------------------------
-
     if data.quantity <= 0:
 
         raise HTTPException(
             status_code=400,
-            detail="Quantity must be greater than zero"
+            detail="Quantity must be greater than zero."
         )
 
-
-    # --------------------------------------------------------
-    # MARKET DATA
-    # --------------------------------------------------------
-
     markets = [
-
         {
             "market": data.market1,
             "price": data.price1,
@@ -943,7 +840,6 @@ def smart_market_recommendation(
             "loading": data.loading1,
             "other": data.other1
         },
-
         {
             "market": data.market2,
             "price": data.price2,
@@ -952,7 +848,6 @@ def smart_market_recommendation(
             "loading": data.loading2,
             "other": data.other2
         },
-
         {
             "market": data.market3,
             "price": data.price3,
@@ -961,13 +856,7 @@ def smart_market_recommendation(
             "loading": data.loading3,
             "other": data.other3
         }
-
     ]
-
-
-    # --------------------------------------------------------
-    # CALCULATE EACH MARKET
-    # --------------------------------------------------------
 
     for market in markets:
 
@@ -975,86 +864,57 @@ def smart_market_recommendation(
 
             raise HTTPException(
                 status_code=400,
-                detail="Price cannot be negative"
+                detail="Price cannot be negative."
             )
 
-        costs = [
-
-            market["transport"],
-
-            market["commission"],
-
-            market["loading"],
-
-            market["other"]
-
-        ]
-
-        if any(cost < 0 for cost in costs):
+        if any(
+            market[cost] < 0
+            for cost in [
+                "transport",
+                "commission",
+                "loading",
+                "other"
+            ]
+        ):
 
             raise HTTPException(
                 status_code=400,
-                detail="Costs cannot be negative"
+                detail="Costs cannot be negative."
             )
 
-        gross_revenue = (
-            data.quantity *
-            market["price"]
+        market["gross_revenue"] = (
+            data.quantity
+            * market["price"]
         )
 
-        total_costs = sum(costs)
-
-        net_return = (
-            gross_revenue -
-            total_costs
+        market["total_costs"] = (
+            market["transport"]
+            + market["commission"]
+            + market["loading"]
+            + market["other"]
         )
 
-        market["gross_revenue"] = round(
-            gross_revenue,
-            2
+        market["net_return"] = (
+            market["gross_revenue"]
+            - market["total_costs"]
         )
-
-        market["total_costs"] = round(
-            total_costs,
-            2
-        )
-
-        market["net_return"] = round(
-            net_return,
-            2
-        )
-
-
-    # --------------------------------------------------------
-    # FIND BEST MARKET
-    # --------------------------------------------------------
 
     best_market = max(
         markets,
         key=lambda x: x["net_return"]
     )
 
-
-    # --------------------------------------------------------
-    # FIND HIGHEST PRICE MARKET
-    # --------------------------------------------------------
-
     highest_price_market = max(
         markets,
         key=lambda x: x["price"]
     )
 
+    analysis = ""
 
-    # --------------------------------------------------------
-    # GEMINI EXPLANATION
-    # --------------------------------------------------------
-
-    try:
+    if client:
 
         prompt = f"""
-You are AgriGuardian AI.
-
-Help a farmer choose the best market based on expected net return.
+You are an agriculture market advisor.
 
 Crop:
 {data.crop}
@@ -1062,73 +922,66 @@ Crop:
 Quantity:
 {data.quantity}
 
-Market calculations:
+Market comparison:
+
 {markets}
 
-Best market according to calculated net return:
+The market with the highest net return is:
 {best_market["market"]}
 
-Highest price market:
+The market with the highest price is:
 {highest_price_market["market"]}
 
-Explain clearly:
+Explain:
 
-1. Recommended market
-2. Expected net return
-3. Why this market is recommended
-4. Difference between highest price and highest net return
-5. Main costs affecting the result
-6. Practical advice for the farmer
+1. Why the recommended market has the best net return
+2. Its expected net return
+3. Difference between highest price and highest profit
+4. Main costs affecting the decision
+5. Practical advice for the farmer
 
-Important:
-The recommendation is based only on the costs and prices
-provided by the user. Actual market conditions may change.
-
-Do not claim that this is a guaranteed profit.
+Use simple language.
 """
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
+        try:
 
-        analysis = response.text
+            response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
+            )
 
-    except Exception as e:
+            analysis = response.text
+
+        except Exception:
+
+            analysis = (
+                f"{best_market['market']} is recommended "
+                "because it provides the highest expected "
+                "net return after considering selling costs."
+            )
+
+    else:
 
         analysis = (
-            "Market recommendation was calculated successfully, "
-            "but AI explanation was unavailable."
+            f"{best_market['market']} is recommended "
+            "because it provides the highest expected "
+            "net return after considering selling costs."
         )
 
-
-    # --------------------------------------------------------
-    # RETURN RESULT
-    # --------------------------------------------------------
-
     return {
-
         "success": True,
-
         "crop": data.crop,
-
         "quantity": data.quantity,
-
         "markets": markets,
-
-        "recommended_market":
-            best_market["market"],
-
-        "recommended_net_return":
+        "recommended_market": best_market["market"],
+        "recommended_net_return": round(
             best_market["net_return"],
-
-        "highest_price_market":
-            highest_price_market["market"],
-
-        "highest_price":
+            2
+        ),
+        "highest_price_market": highest_price_market["market"],
+        "highest_price": round(
             highest_price_market["price"],
-
-        "analysis":
-            analysis
-
+            2
+        ),
+        "analysis": analysis
     }
