@@ -1,82 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AgriGuardian AI</title>
+    <title>AgriGuardian AI Agent</title>
 
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
             text-align: center;
-            margin-top: 80px;
+        }
+
+        .logo {
+            font-size: 60px;
+            margin-bottom: 10px;
         }
 
         h1 {
-            font-size: 40px;
+            color: #2e7d32;
+            font-size: 36px;
+            margin-bottom: 10px;
         }
 
-        h2 {
-            margin-top: 30px;
+        .subtitle {
+            color: #555;
+            font-size: 20px;
+            margin-bottom: 25px;
         }
 
         .farmer-message {
-            font-size: 18px;
-            margin-bottom: 30px;
+            background: #f1f8e9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
 
-        input {
-            width: 300px;
-            padding: 12px;
+        .farmer-message h2 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+
+        .farmer-message p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .language-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            margin-top: 10px;
         }
 
         button {
-            padding: 12px 20px;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
             cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f1f8e9;
+            border-radius: 10px;
+            text-align: left;
+            line-height: 1.7;
+            display: none;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .links {
+            margin-top: 25px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 18px;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .links a:hover {
+            background: #1b5e20;
+        }
+
+        .loading {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .logo {
+                font-size: 45px;
+            }
+
+            .subtitle {
+                font-size: 17px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h1 id="title">🌱 AgriGuardian AI Agent</h1>
+<div class="container">
 
-    <p id="subtitle">Your Smart Farming Assistant</p>
+    <div class="logo">🌱</div>
 
-    <h2>Proud of Our Farmers 🌾</h2>
+    <h1>AgriGuardian AI Agent</h1>
 
-    <p class="farmer-message">
-        Inspired by Their Hard Work. Built to Support Their Future.
+    <p class="subtitle">
+        Your Smart Farming Assistant
     </p>
 
-    <label for="language" id="languageLabel">
-        Select Language:
+
+    <div class="farmer-message">
+
+        <h2>🌾 Proud of Our Farmers 🌾</h2>
+
+        <p>
+            Inspired by Their Hard Work.
+            Built to Support Their Future.
+        </p>
+
+    </div>
+
+
+    <!-- LANGUAGE -->
+
+    <div class="language-section">
+
+        <label for="language">
+            Select Language:
+        </label>
+
+        <select id="language">
+
+            <option value="en">
+                English
+            </option>
+
+            <option value="hi">
+                हिंदी
+            </option>
+
+            <option value="mr">
+                मराठी
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- QUESTION -->
+
+    <label for="question">
+        Ask your farming question:
     </label>
 
-    <select id="language" onchange="changeLanguage()">
-        <option value="en">English</option>
-        <option value="hi">हिंदी</option>
-        <option value="mr">मराठी</option>
-    </select>
-
-    <br><br>
-
-    <input
+    <textarea
         id="question"
-        type="text"
-        placeholder="Ask your farming question"
-    >
+        placeholder="Example: Which crop is suitable for black soil during Kharif season?"
+    ></textarea>
 
-    <button onclick="askQuestion()" id="askButton">
-        Ask AI
+
+    <button onclick="askAI()">
+        🤖 Ask AI
     </button>
 
-    <p id="answer"></p>
 
-    <script src="script.js"></script>
+    <!-- RESULT -->
+
+    <div
+        id="result"
+        class="result"
+    ></div>
+
+
+    <!-- LINKS -->
+
+    <div class="links">
+
+        <a href="/login.html">
+            🔐 Login
+        </a>
+
+        <a href="/signup.html">
+            📝 Sign Up
+        </a>
+
+    </div>
+
+
+    <footer>
+
+        <p>
+            AgriGuardian AI Agent © 2026
+        </p>
+
+        <p>
+            Smart technology for smarter farming 🌾
+        </p>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+    async function askAI() {
+
+        const question =
+            document.getElementById("question")
+            .value
+            .trim();
+
+        const language =
+            document.getElementById("language")
+            .value;
+
+        const result =
+            document.getElementById("result");
+
+
+        if (!question) {
+
+            result.style.display = "block";
+
+            result.className = "result error";
+
+            result.innerHTML =
+                "⚠️ Please enter your farming question.";
+
+            return;
+        }
+
+
+        result.style.display = "block";
+
+        result.className = "result";
+
+        result.innerHTML =
+            '<p class="loading">🤖 AgriGuardian AI is thinking...</p>';
+
+
+        try {
+
+            /*
+             * IMPORTANT:
+             * Use the current Render website.
+             * Do NOT use 127.0.0.1 or localhost.
+             */
+
+            const response = await fetch(
+                "/ask",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        question: question,
+
+                        language: language
+
+                    })
+                }
+            );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                result.className =
+                    "result error";
+
+                result.innerHTML =
+                    `
+                    <h3>❌ Error</h3>
+                    <p>
+                        ${data.detail || data.error || "Unable to get AI response."}
+                    </p>
+                    `;
+
+                return;
+            }
+
+
+            if (data.success) {
+
+                result.className =
+                    "result success";
+
+                result.innerHTML =
+                    `
+                    <h3>🤖 AgriGuardian AI Answer</h3>
+
+                    <br>
+
+                    <p>
+                        ${(data.answer || "")
+                        .replace(/\n/g, "<br>")}
+                    </p>
+                    `;
+
+            } else {
+
+                result.className =
+                    "result error";
+
+                result.innerHTML =
+                    `
+                    <h3>❌ AI Error</h3>
+
+                    <p>
+                        ${data.error || "Something went wrong."}
+                    </p>
+                    `;
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            result.className =
+                "result error";
+
+            result.innerHTML =
+                `
+                <h3>❌ Connection Error</h3>
+
+                <p>
+                    Could not connect to AgriGuardian backend.
+                </p>
+
+                <p>
+                    Please try again after a few seconds.
+                </p>
+                `;
+        }
+
+    }
+
+
+    /*
+     * Allow Ctrl + Enter to ask the question.
+     */
+
+    document
+        .getElementById("question")
+        .addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.ctrlKey &&
+                    event.key === "Enter"
+                ) {
+
+                    askAI();
+
+                }
+
+            }
+        );
+
+</script>
 
 </body>
-
 </html>
