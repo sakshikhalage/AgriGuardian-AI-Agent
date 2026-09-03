@@ -1,412 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Sign Up - AgriGuardian AI</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriGuardian AI - Signup</title>
 
     <style>
-
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-
 
         body {
-
-            margin: 0;
-
-            min-height: 100vh;
-
             font-family: Arial, sans-serif;
-
-            background:
-                linear-gradient(
-                    rgba(0, 0, 0, 0.35),
-                    rgba(0, 0, 0, 0.35)
-                ),
-                url("https://images.unsplash.com/photo-1500382017468-9049fed747ef")
-                center / cover no-repeat;
-
+            min-height: 100vh;
             display: flex;
-
             justify-content: center;
-
             align-items: center;
-
-            padding: 30px;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
         }
 
-
-        .signup-card {
-
-            background: rgba(255, 255, 255, 0.96);
-
-            width: 400px;
-
-            max-width: 100%;
-
-            padding: 40px 35px;
-
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 35px;
             border-radius: 18px;
-
-            text-align: center;
-
-            box-shadow:
-                0 10px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
-
 
         .logo {
-
-            font-size: 42px;
-
-            margin-bottom: 5px;
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
         }
-
 
         h1 {
-
-            margin: 0;
-
-            font-size: 30px;
-
-            color: #245b28;
-        }
-
-
-        .farmer-text {
-
+            text-align: center;
             color: #2e7d32;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-            margin-top: 12px;
-        }
-
-
-        h2 {
-
-            margin-top: 30px;
-
-            margin-bottom: 25px;
-
-            color: #333;
-        }
-
-
-        .form-group {
-
-            text-align: left;
-
-            margin-bottom: 20px;
-        }
-
-
-        label {
-
-            display: block;
-
-            font-weight: bold;
-
             margin-bottom: 8px;
         }
 
+        .subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #333;
+        }
 
         input {
-
             width: 100%;
-
             padding: 13px;
-
-            border: 1px solid #cccccc;
-
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
             border-radius: 8px;
-
             font-size: 15px;
         }
 
-
         input:focus {
-
             outline: none;
-
-            border-color: #2e7d32;
+            border-color: #43a047;
         }
-
 
         button {
-
             width: 100%;
-
-            padding: 13px;
-
-            border: none;
-
-            border-radius: 8px;
-
+            padding: 14px;
             background: #2e7d32;
-
             color: white;
-
+            border: none;
+            border-radius: 8px;
             font-size: 16px;
-
             font-weight: bold;
-
             cursor: pointer;
-
-            margin-top: 5px;
         }
-
 
         button:hover {
-
-            background: #256628;
+            background: #1b5e20;
         }
-
 
         #message {
-
-            margin-top: 15px;
-
+            margin-top: 18px;
+            text-align: center;
             font-weight: bold;
         }
 
-
-        .login-text {
-
-            margin-top: 25px;
-
-            color: #444;
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
         }
 
-
-        .login-text a {
-
+        .login-link a {
             color: #2e7d32;
-
             font-weight: bold;
-
             text-decoration: none;
         }
 
-
-        .footer-message {
-
-            margin-top: 25px;
-
-            color: #666;
-
-            font-size: 14px;
-
-            line-height: 1.5;
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+            font-size: 13px;
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+<div class="container">
 
-    <div class="signup-card">
+    <div class="logo">🌱</div>
 
+    <h1>AgriGuardian AI</h1>
 
-        <div class="logo">
-            🌱
-        </div>
+    <p class="subtitle">
+        Proud of Our Farmers 🌾
+    </p>
 
+    <h2 style="text-align:center; margin-bottom:25px;">
+        Create Your Account
+    </h2>
 
-        <h1>
-            AgriGuardian AI
-        </h1>
+    <form id="signupForm">
 
+        <label for="name">Full Name</label>
+        <input
+            type="text"
+            id="name"
+            placeholder="Enter your full name"
+            required
+        >
 
-        <p class="farmer-text">
-            Proud of Our Farmers 🌾
-        </p>
+        <label for="email">Email</label>
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+        >
 
+        <label for="password">Password</label>
+        <input
+            type="password"
+            id="password"
+            placeholder="Create a password"
+            required
+            minlength="6"
+        >
 
-        <h2>
-            Create Your Account
-        </h2>
+        <button type="submit">
+            🌱 Create Account
+        </button>
 
+    </form>
 
-        <form id="signupForm">
+    <div id="message"></div>
 
-
-            <div class="form-group">
-
-                <label for="name">
-                    Full Name
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="Enter your full name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="email">
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="Enter your email"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="password">
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Create a password"
-                    required
-                >
-
-            </div>
-
-
-            <button type="submit">
-                🌱 Create Account
-            </button>
-
-
-        </form>
-
-
-        <p id="message"></p>
-
-
-        <p class="login-text">
-
-            Already have an account?
-
-            <a href="login.html">
-                Login
-            </a>
-
-        </p>
-
-
-        <p class="footer-message">
-
-            Your hard work feeds the world. 🌾<br>
-
-            AgriGuardian AI is here to support you.
-
-        </p>
-
-
+    <div class="login-link">
+        Already have an account?
+        <a href="/login.html">Login</a>
     </div>
 
+    <div class="footer">
+        Your hard work feeds the world.<br>
+        AgriGuardian AI is here to support you.
+    </div>
 
-    <script>
+</div>
 
-        document
-            .getElementById("signupForm")
-            .addEventListener("submit", async function(event) {
+<script>
 
-                event.preventDefault();
+document.getElementById("signupForm").addEventListener("submit", async function(event) {
 
+    event.preventDefault();
 
-                const name =
-                    document.getElementById("name").value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-                const email =
-                    document.getElementById("email").value;
+    const message = document.getElementById("message");
 
-                const password =
-                    document.getElementById("password").value;
+    message.style.color = "#555";
+    message.textContent = "Creating your account...";
 
-                const message =
-                    document.getElementById("message");
+    try {
 
+        const response = await fetch("/signup", {
+            method: "POST",
 
-                message.innerText =
-                    "Creating your account...";
+            headers: {
+                "Content-Type": "application/json"
+            },
 
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            })
+        });
 
-                try {
+        const data = await response.json();
 
-                    const response = await fetch(
-                        "http://127.0.0.1:8000/signup",
-                        {
-                            method: "POST",
+        if (response.ok && data.success) {
 
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
+            message.style.color = "green";
+            message.textContent = "Account created successfully! Redirecting...";
 
-                            body: JSON.stringify({
-                                name: name,
-                                email: email,
-                                password: password
-                            })
-                        }
-                    );
+            localStorage.setItem("userName", name);
+            localStorage.setItem("userEmail", email);
 
+            setTimeout(function() {
+                window.location.href = "/login.html";
+            }, 1500);
 
-                    const data =
-                        await response.json();
+        } else {
 
+            message.style.color = "red";
+            message.textContent =
+                data.message || "Could not create account.";
 
-                    if (response.ok) {
+        }
 
-                        message.innerText =
-                            "Account created successfully! 🌱";
+    } catch (error) {
 
-                        document
-                            .getElementById("signupForm")
-                            .reset();
+        console.error(error);
 
-                    } else {
+        message.style.color = "red";
+        message.textContent =
+            "Could not connect to AgriGuardian backend.";
 
-                        message.innerText =
-                            data.detail || "Signup failed.";
+    }
 
-                    }
+});
 
-
-                } catch (error) {
-
-                    message.innerText =
-                        "Could not connect to AgriGuardian backend.";
-
-                }
-
-            });
-
-    </script>
-
+</script>
 
 </body>
-
 </html>
