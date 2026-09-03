@@ -171,18 +171,3 @@ GitHub: https://github.com/sakshikhalage
 
 ````
 
-### 4. Commit the change
-
-Scroll to the bottom.
-
-In **Commit changes**, enter:
-
-```text
-Improve README documentation
-````
-
-Then click **Commit changes**.
-
-**Don't change any other files right now.**
-
-After you commit it, tell me **“README done”** and we'll do the next important step: **check your GitHub files for anything that should not be public**.
